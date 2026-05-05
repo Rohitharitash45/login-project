@@ -10,6 +10,7 @@ ADMIN_PASS = "admin123"
 def home():
     return render_template('index.html')
 
+
 @app.route('/login', methods=['POST'])
 def login():
     username = request.form['username']
@@ -20,9 +21,11 @@ def login():
 
     return "User Data Saved!"
 
+
 @app.route('/admin')
 def admin():
     return render_template('admin_login.html')
+
 
 @app.route('/admin_login', methods=['POST'])
 def admin_login():
@@ -35,19 +38,36 @@ def admin_login():
     else:
         return "Wrong Admin Credentials"
 
+
 @app.route('/dashboard')
 def dashboard():
     if 'admin' in session:
-        with open("data.txt", "r") as f:
-            data = f.readlines()
+        try:
+            with open("data.txt", "r") as f:
+                data = f.readlines()
+        except:
+            data = []
         return render_template('dashboard.html', data=data)
     else:
         return redirect('/admin')
+
 
 @app.route('/logout')
 def logout():
     session.pop('admin', None)
     return redirect('/admin')
 
+
+# 🔥 YAHI ADD KIYA HAI
+@app.route('/data')
+def view_data():
+    try:
+        with open("data.txt", "r") as f:
+            return "<br>".join(f.readlines())
+    except:
+        return "No data found"
+
+
+# LAST ME HAMESHA YE HI RAHEGA
 if __name__ == '__main__':
     app.run(debug=True)
